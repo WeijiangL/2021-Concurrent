@@ -2,6 +2,8 @@ package com.example.queue;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.TimeUnit;
 
 // 阻塞队列
 /*
@@ -35,9 +37,40 @@ import java.util.concurrent.BlockingQueue;
         b. poll(time unit)
         注：如果队列满了会阻塞一段时间不让插入，超时后线程自动退出
  */
+/*
+    SynchronousQueue:
+    每一个Put操作必须要等待一个take操作，否则不能继续插入，反之亦然
+ */
 public class BlockingQueueDemo {
     public static void main(String[] args) {
-        ArrayBlockingQueue<Integer> arrayBlockingQueue = new ArrayBlockingQueue<>(3);
+//        ArrayBlockingQueue<Integer> arrayBlockingQueue = new ArrayBlockingQueue<>(3);
+        SynchronousQueue<Object> queue = new SynchronousQueue<>();
 
+        new Thread (() -> {
+            try {
+                System.out.println(Thread.currentThread().getName() + "\t 插入" + "1");
+                queue.put(1);
+                System.out.println(Thread.currentThread().getName() + "\t 插入" + "2");
+                queue.put(2);
+                System.out.println(Thread.currentThread().getName() + "\t 插入" + "3");
+                queue.put(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } , "AAA").start();
+
+        new Thread (() -> {
+
+            try {
+                TimeUnit.SECONDS.sleep(3);
+                System.out.println(Thread.currentThread().getName() + "\t 取出" + queue.take());
+                TimeUnit.SECONDS.sleep(3);
+                System.out.println(Thread.currentThread().getName() + "\t 取出" + queue.take());
+                TimeUnit.SECONDS.sleep(3);
+                System.out.println(Thread.currentThread().getName() + "\t 取出" + queue.take());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } , "BBB").start();
     }
 }
