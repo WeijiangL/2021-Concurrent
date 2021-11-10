@@ -38,3 +38,6 @@ public class SingletonDemo {
 
     }
 }
+// 分配内存
+// chushihua对象
+// 将对象指向内存

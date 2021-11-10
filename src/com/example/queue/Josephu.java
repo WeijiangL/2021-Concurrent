@@ -1,4 +1,4 @@
-package com.example.list;
+package com.example.queue;
 
 // 约瑟夫问题
 // 创建环形单向链表
@@ -62,13 +62,77 @@ class CircleSingleLinkedList {
             curBoy = curBoy.next;
         }
     }
+
+    // 约瑟夫问题
+    /*
+        概述：比如n=5(环形链表有5个人)，k=1(表示从第一个人开始数)，m=2(表示从第一个人开始数两下)，也就是数到2，让2离开这个环形链表
+     */
+    /*
+        思路
+        1.创建一个辅助节点helper，指向first节点的前一个节点，因为涉及到删除节点，必须要往前定义一个指针
+        2.通过遍历，让helper和first移动k-1步
+        3.通过遍历，让helper和first移动m-1步
+        4.删除first指向的节点
+          first =first.next
+          help.next = first
+          这个出圈顺序是：2 4 1 5 3
+     */
+    public void sovleJosephu(int n , int k , int m) {
+        // 对参数进行数据校验
+        if (first == null || k <= 0 || k > n) {
+            System.out.println("参数不正确，请重新输入");
+        }
+
+        /*
+            1.创建一个辅助节点helper，指向first节点的前一个节点，因为涉及到删除节点，必须要往前定义一个指针
+         */
+        Boy helper = first;
+        //想要让helper指向first的前一个节点，需要通过遍历
+        while(true) {
+            if(helper.next == first) {// 表示helper的下一个节点是first，退出循环
+                break;
+            }
+            helper = helper.next;
+        }
+
+        /*
+            2.通过遍历，让helper和first移动k-1步(开始报数前)
+         */
+        for (int i = 0; i < k - 1; i++) {
+            helper = helper.next;
+            first = first.next;
+        }
+
+        /*
+            3.通过遍历，让helper和first移动m-1步（开始报数后），循环操作，直到圈中只有一个节点
+         */
+        while (true) {
+            if (first == helper) {// 说明圈中只有一个节点了
+                break;
+            }
+            for (int i = 0; i < m - 1; i++) { // first指向要删除的节点，helper指向要删除的前一个节点
+                helper = helper.next;
+                first = first.next;
+            }
+         /*
+            4.删除first指向的节点
+         */
+            System.out.println("删除的节点为：" + first.no);
+            first =first.next;
+            helper.next = first;
+
+        }
+        System.out.println("圈中还剩下的节点为：" + first.no);
+    }
 }
 
 public class Josephu {
     public static void main(String[] args) {
         CircleSingleLinkedList circleSingleLinkedList = new CircleSingleLinkedList();
         circleSingleLinkedList.add(5);
-        circleSingleLinkedList.list();
+//        circleSingleLinkedList.list();
+        circleSingleLinkedList.sovleJosephu(5 , 1 , 2);
+
     }
 }
 
